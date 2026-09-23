@@ -98,13 +98,13 @@
     },
     {
       "path": "README.md",
-      "bytes": 15020,
-      "sha256": "9e3939155fbb0031a97869d6f5e3e3e05984dd4966d75a5bcf65a1f4471d2903"
+      "bytes": 16696,
+      "sha256": "fdac1dadf0ab1149b0511064de0186a313d25f04b5900fc1fa76bcfad96e8738"
     },
     {
       "path": "README.zh-CN.md",
-      "bytes": 11149,
-      "sha256": "beb2db276ede96710b2121013cb0ad3cd0dc9ca20fb4ec6f07f1a74898cde65e"
+      "bytes": 13341,
+      "sha256": "aa368db26490906eb79bb92d9cf1db6e37835bb9f1396facb07a7e7fa3d5af1a"
     },
     {
       "path": "reports/published/analysis.json",

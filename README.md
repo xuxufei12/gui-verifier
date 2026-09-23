@@ -2,42 +2,39 @@
 
 **English** | [简体中文](README.zh-CN.md)
 
-**Turn screenshots into decisions, without generating answer tokens.**
+**Screenshots in, decisions out. A small GUI verifier built on Qwen3.5-0.8B.**
 
-A small, local GUI verification research project built on **Qwen3.5-0.8B**. Give it a screenshot, a goal, rules, and questions such as “Is the toggle on?” or “Is a success notification visible?” It scores candidate answers and returns structured decisions.
+Jev got me thinking about a familiar pattern: we ask a model to make a simple decision, then wait while it writes the answer token by token. I wanted to try that direct-decision idea on screenshots.
 
-Inspired by Jev-style decision interfaces, this is an independent implementation—not a reproduction of Jev's weights, architecture, or RLCD training. The repository provides inference, decision LoRA and JSON SFT training, evaluation scripts, and aggregate results. [Extended annotations and fixed splits](datasets/gui-verifier-v1/) are public. Images must be acquired from upstream; trained adapters are not yet released.
+GUI Verifier takes an image and questions like “Is the success message visible?” or “Is the toggle on?” It reads candidate scores and returns `yes / no / unknown` through code. Multiple questions can reuse the same image's vision features.
 
-## Why this experiment?
+## What I took away from the experiment
 
-GUI agents need to check the visible result of an action, not just issue the action. This project explores a small verifier that could inform an agent's next step: continue, wait, retry, or request review. End-to-end agent improvements have not been measured.
+**The Jev-inspired direction is worth pursuing for screenshot checks: when the answer is a choice, skipping answer generation can get that choice back sooner.**
 
-It also asks a practical question: for a finite set of answers, how do direct candidate scores compare with generating a JSON array? We train both routes rather than comparing a fine-tuned classifier only against an unadapted generator.
+I trained two versions of the same Qwen3.5-0.8B base: decision LoRA and JSON-output SFT. Their judgment quality was close on this development set—90.18% versus 89.80% accuracy, with constrained JSON at 91.25%—while latency showed a clearer benefit:
 
-## Results
-
-Experiment 004, completed September 23, 2026. **288 screenshots, 1,314 judgments**, with teacher-generated labels reviewed by the same teacher model. This is a **silver development validation set**, also used for checkpoint and learning-rate selection—not an independent human-labeled test set.
-
-| Model / inference | Strict accuracy | Macro-F1 | Valid output format | False-success rate ↓ |
-|---|---:|---:|---:|---:|
-| Base Qwen · fast logits | 48.93% | 33.30% | 100% (programmatic) | 67.57% |
-| Decision LoRA · fast logits | **90.18%** | 91.88% | 100% (programmatic) | **5.56%** |
-| JSON SFT · generation | 89.80% | 92.17% | 97.92% | 6.59% |
-| JSON SFT · constrained generation | **91.25%** | **92.67%** | 100% | 7.24% |
-
-Malformed arrays count as failures for every question in that request. False-success rate is the fraction of gold `no`/`unknown` judgments predicted as `yes`. Invalid outputs are accuracy failures but do not count as predicted `yes`; read this metric together with format validity.
-
-| Questions per screenshot | Decision LoRA fast logits p50 | JSON SFT generation p50 | System p50 ratio |
+| Questions per screenshot | Direct decisions p50 | JSON SFT generation p50 | Latency ratio |
 |---|---:|---:|---:|
-| 1 | 58.93 ms | 137.31 ms | 2.33× |
-| 2 | 70.23 ms | 177.45 ms | 2.53× |
-| 4 | 185.81 ms | 243.13 ms | 1.31× |
+| 1 | **58.93 ms** | 137.31 ms | 2.33× |
+| 2 | **70.23 ms** | 177.45 ms | 2.53× |
+| 4 | **185.81 ms** | 243.13 ms | 1.31× |
 
-Each K uses 100 screenshots and five repetitions per method. These compare **differently trained systems**, not a single isolated inference optimization. At K=4, fast logits does not beat same-weight constrained JSON on p95 latency.
+This compares two trained systems on the same hardware, using 100 screenshots per question count and five repetitions per method. It is not a benchmark of Jev. Labels are teacher-generated development labels; the [experiment details](#experiment-details) below include the full metrics and statistical limits.
 
-The accuracy difference between decision fast logits and JSON SFT generation is +0.38 percentage points. A 2,000-replicate bootstrap over 269 groups gives a conditional 95% interval of **[-2.10, +3.05] points**: no demonstrated accuracy advantage. Constrained JSON SFT achieves the highest observed accuracy.
+What interests me here is another useful job for a small vision-language model: repeated state checks, with less time spent waiting for an answer to be generated.
 
-Machine-readable [results](reports/published/) include every model/protocol combination; the [detailed report](docs/RESULTS_004.md) is in Chinese. Reported gains are development-set findings, not production or Jev benchmark claims.
+## Where I want to use it
+
+**Checking an agent's last action.** After clicking Save, look for the success message. After changing a setting, check the toggle. A parent workflow could use the result to continue, wait, or retry.
+
+**UI regression checks.** Questions such as “Is the submit button visible?” or “Has an error message appeared?” could supplement existing tests after a UI change. Each application would need its own evaluation.
+
+**State-dependent automation.** A login screen, loading state, error page, and completion screen call for different next steps. Returning `unknown` when the image is inconclusive gives the workflow a chance to ask for review.
+
+These are integration directions, not measured end-to-end improvements. This experiment evaluates screenshot judgments; it has not measured full-agent success or total runtime. A screenshot also cannot prove a hidden backend transaction completed.
+
+Inference, training, evaluation, and [extended annotations with fixed splits](datasets/gui-verifier-v1/) are in this repository. Images come from upstream; trained adapters are not yet released. This is an independent implementation, not a reconstruction of Jev's internal architecture or training.
 
 ## How it works
 
@@ -199,6 +196,32 @@ requirements-experiment004.txt
 ```
 
 The release includes expanded annotations, fixed splits and image provenance. It excludes credentials, internal infrastructure tools, original screenshots, raw teacher outputs and weights/adapters. Images must be acquired under upstream terms and reconstructed using `tools/restore_dataset_images.py`. Adapters are not public; exact results still require training and matching the recorded environment. See [release notes](docs/RELEASE.md).
+
+## Experiment details
+
+
+Experiment 004, completed September 23, 2026. **288 screenshots, 1,314 judgments**, with teacher-generated labels reviewed by the same teacher model. This is a **silver development validation set**, also used for checkpoint and learning-rate selection—not an independent human-labeled test set.
+
+| Model / inference | Strict accuracy | Macro-F1 | Valid output format | False-success rate ↓ |
+|---|---:|---:|---:|---:|
+| Base Qwen · fast logits | 48.93% | 33.30% | 100% (programmatic) | 67.57% |
+| Decision LoRA · fast logits | **90.18%** | 91.88% | 100% (programmatic) | **5.56%** |
+| JSON SFT · generation | 89.80% | 92.17% | 97.92% | 6.59% |
+| JSON SFT · constrained generation | **91.25%** | **92.67%** | 100% | 7.24% |
+
+Malformed arrays count as failures for every question in that request. False-success rate is the fraction of gold `no`/`unknown` judgments predicted as `yes`. Invalid outputs are accuracy failures but do not count as predicted `yes`; read this metric together with format validity.
+
+| Questions per screenshot | Decision LoRA fast logits p50 | JSON SFT generation p50 | System p50 ratio |
+|---|---:|---:|---:|
+| 1 | 58.93 ms | 137.31 ms | 2.33× |
+| 2 | 70.23 ms | 177.45 ms | 2.53× |
+| 4 | 185.81 ms | 243.13 ms | 1.31× |
+
+Each K uses 100 screenshots and five repetitions per method. These compare **differently trained systems**, not a single isolated inference optimization. At K=4, fast logits does not beat same-weight constrained JSON on p95 latency.
+
+The accuracy difference between decision fast logits and JSON SFT generation is +0.38 percentage points. A 2,000-replicate bootstrap over 269 groups gives a conditional 95% interval of **[-2.10, +3.05] points**: no demonstrated accuracy advantage. Constrained JSON SFT achieves the highest observed accuracy.
+
+Machine-readable [results](reports/published/) include every model/protocol combination; the [detailed report](docs/RESULTS_004.md) is in Chinese. Reported gains are development-set findings, not production or Jev benchmark claims.
 
 ## License and acknowledgments
 
