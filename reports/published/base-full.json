@@ -1,0 +1,362 @@
+{
+  "quality": {
+    "json": {
+      "requests": 288,
+      "decisions": 1314,
+      "strict_accuracy": 0.365296803652968,
+      "accuracy_on_valid_arrays_only": 0.4655674102812803,
+      "valid_decisions": 1031,
+      "macro_f1": 0.3140968838908406,
+      "per_class": {
+        "yes": {
+          "precision": 0.4675642594859241,
+          "recall": 0.7074074074074074,
+          "f1": 0.5630066322770818
+        },
+        "no": {
+          "precision": 0.42134831460674155,
+          "recall": 0.1388888888888889,
+          "f1": 0.20891364902506965
+        },
+        "unknown": {
+          "precision": 0.6388888888888888,
+          "recall": 0.09829059829059829,
+          "f1": 0.17037037037037037
+        }
+      },
+      "confusion": {
+        "yes": {
+          "yes": 382,
+          "no": 38,
+          "unknown": 4,
+          "invalid": 116
+        },
+        "no": {
+          "yes": 340,
+          "no": 75,
+          "unknown": 9,
+          "invalid": 116
+        },
+        "unknown": {
+          "yes": 95,
+          "no": 65,
+          "unknown": 23,
+          "invalid": 51
+        }
+      },
+      "valid_array_rate": 0.7430555555555556,
+      "all_questions_correct_rate": 0.010416666666666666,
+      "false_success_rate": 0.562015503875969,
+      "quality": "same-model silver labels; development results, not independent human test"
+    },
+    "json_constrained": {
+      "requests": 288,
+      "decisions": 1314,
+      "strict_accuracy": 0.4923896499238965,
+      "accuracy_on_valid_arrays_only": 0.4923896499238965,
+      "valid_decisions": 1314,
+      "macro_f1": 0.39832255925037036,
+      "per_class": {
+        "yes": {
+          "precision": 0.4933920704845815,
+          "recall": 0.8296296296296296,
+          "f1": 0.6187845303867403
+        },
+        "no": {
+          "precision": 0.4725274725274725,
+          "recall": 0.31851851851851853,
+          "f1": 0.3805309734513274
+        },
+        "unknown": {
+          "precision": 0.6428571428571429,
+          "recall": 0.11538461538461539,
+          "f1": 0.1956521739130435
+        }
+      },
+      "confusion": {
+        "yes": {
+          "yes": 448,
+          "no": 89,
+          "unknown": 3,
+          "invalid": 0
+        },
+        "no": {
+          "yes": 356,
+          "no": 172,
+          "unknown": 12,
+          "invalid": 0
+        },
+        "unknown": {
+          "yes": 104,
+          "no": 103,
+          "unknown": 27,
+          "invalid": 0
+        }
+      },
+      "valid_array_rate": 1.0,
+      "all_questions_correct_rate": 0.06597222222222222,
+      "false_success_rate": 0.5943152454780362,
+      "quality": "same-model silver labels; development results, not independent human test"
+    },
+    "logits": {
+      "requests": 288,
+      "decisions": 1314,
+      "strict_accuracy": 0.487062404870624,
+      "accuracy_on_valid_arrays_only": 0.487062404870624,
+      "valid_decisions": 1314,
+      "macro_f1": 0.33026602892932516,
+      "per_class": {
+        "yes": {
+          "precision": 0.48289345063538613,
+          "recall": 0.9148148148148149,
+          "f1": 0.6321177223288548
+        },
+        "no": {
+          "precision": 0.5034722222222222,
+          "recall": 0.26851851851851855,
+          "f1": 0.3502415458937198
+        },
+        "unknown": {
+          "precision": 0.3333333333333333,
+          "recall": 0.004273504273504274,
+          "f1": 0.008438818565400843
+        }
+      },
+      "confusion": {
+        "yes": {
+          "yes": 494,
+          "no": 45,
+          "unknown": 1,
+          "invalid": 0
+        },
+        "no": {
+          "yes": 394,
+          "no": 145,
+          "unknown": 1,
+          "invalid": 0
+        },
+        "unknown": {
+          "yes": 135,
+          "no": 98,
+          "unknown": 1,
+          "invalid": 0
+        }
+      },
+      "valid_array_rate": 1.0,
+      "all_questions_correct_rate": 0.017361111111111112,
+      "false_success_rate": 0.6834625322997416,
+      "quality": "same-model silver labels; development results, not independent human test"
+    },
+    "fast": {
+      "requests": 288,
+      "decisions": 1314,
+      "strict_accuracy": 0.4893455098934551,
+      "accuracy_on_valid_arrays_only": 0.4893455098934551,
+      "valid_decisions": 1314,
+      "macro_f1": 0.33300037955176603,
+      "per_class": {
+        "yes": {
+          "precision": 0.48523622047244097,
+          "recall": 0.912962962962963,
+          "f1": 0.6336760925449871
+        },
+        "no": {
+          "precision": 0.5050847457627119,
+          "recall": 0.2759259259259259,
+          "f1": 0.3568862275449102
+        },
+        "unknown": {
+          "precision": 0.3333333333333333,
+          "recall": 0.004273504273504274,
+          "f1": 0.008438818565400843
+        }
+      },
+      "confusion": {
+        "yes": {
+          "yes": 493,
+          "no": 46,
+          "unknown": 1,
+          "invalid": 0
+        },
+        "no": {
+          "yes": 390,
+          "no": 149,
+          "unknown": 1,
+          "invalid": 0
+        },
+        "unknown": {
+          "yes": 133,
+          "no": 100,
+          "unknown": 1,
+          "invalid": 0
+        }
+      },
+      "valid_array_rate": 1.0,
+      "all_questions_correct_rate": 0.017361111111111112,
+      "false_success_rate": 0.6757105943152455,
+      "quality": "same-model silver labels; development results, not independent human test"
+    }
+  },
+  "speed": {
+    "1": {
+      "json": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 141.23867638409138,
+        "p95_ms": 247.08989262580872,
+        "attempted_decisions_per_second": 6.4617345061923865,
+        "valid_decisions_per_second": 0.0,
+        "valid_array_rate": 0.0
+      },
+      "json_constrained": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 133.7580718100071,
+        "p95_ms": 175.96781626343727,
+        "attempted_decisions_per_second": 7.110944470201671,
+        "valid_decisions_per_second": 7.110944470201671,
+        "valid_array_rate": 1.0
+      },
+      "logits": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 59.8472710698843,
+        "p95_ms": 100.56925192475319,
+        "attempted_decisions_per_second": 14.899291243881594,
+        "valid_decisions_per_second": 14.899291243881594,
+        "valid_array_rate": 1.0
+      },
+      "fast": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 59.019535779953,
+        "p95_ms": 98.21369126439095,
+        "attempted_decisions_per_second": 15.035406842306733,
+        "valid_decisions_per_second": 15.035406842306733,
+        "valid_array_rate": 1.0
+      }
+    },
+    "2": {
+      "json": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 314.38635662198067,
+        "p95_ms": 648.1191031634808,
+        "attempted_decisions_per_second": 6.888031886396292,
+        "valid_decisions_per_second": 1.722007971599073,
+        "valid_array_rate": 0.25
+      },
+      "json_constrained": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 178.78792062401772,
+        "p95_ms": 204.5857533812523,
+        "attempted_decisions_per_second": 11.11335802122352,
+        "valid_decisions_per_second": 11.11335802122352,
+        "valid_array_rate": 1.0
+      },
+      "logits": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 122.02640250325203,
+        "p95_ms": 200.5409151315689,
+        "attempted_decisions_per_second": 15.261047605488798,
+        "valid_decisions_per_second": 15.261047605488798,
+        "valid_array_rate": 1.0
+      },
+      "fast": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 105.92886433005333,
+        "p95_ms": 182.6661452651024,
+        "attempted_decisions_per_second": 17.094952216166423,
+        "valid_decisions_per_second": 17.094952216166423,
+        "valid_array_rate": 1.0
+      }
+    },
+    "4": {
+      "json": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 520.4486679285765,
+        "p95_ms": 914.9454794824123,
+        "attempted_decisions_per_second": 7.275405005631813,
+        "valid_decisions_per_second": 5.092783503942269,
+        "valid_array_rate": 0.7
+      },
+      "json_constrained": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 250.81493519246578,
+        "p95_ms": 268.780130892992,
+        "attempted_decisions_per_second": 15.827851414078612,
+        "valid_decisions_per_second": 15.827851414078612,
+        "valid_array_rate": 1.0
+      },
+      "logits": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 239.3193580210209,
+        "p95_ms": 314.98032808303833,
+        "attempted_decisions_per_second": 16.839005889107348,
+        "valid_decisions_per_second": 16.839005889107348,
+        "valid_array_rate": 1.0
+      },
+      "fast": {
+        "screens": 100,
+        "measurements": 500,
+        "p50_ms": 194.56512294709682,
+        "p95_ms": 286.812387406826,
+        "attempted_decisions_per_second": 19.970901748106364,
+        "valid_decisions_per_second": 19.970901748106364,
+        "valid_array_rate": 1.0
+      }
+    },
+    "8": {
+      "json": {
+        "screens": 0,
+        "measurements": 0,
+        "p50_ms": null,
+        "p95_ms": null,
+        "attempted_decisions_per_second": null,
+        "valid_decisions_per_second": null,
+        "valid_array_rate": null
+      },
+      "json_constrained": {
+        "screens": 0,
+        "measurements": 0,
+        "p50_ms": null,
+        "p95_ms": null,
+        "attempted_decisions_per_second": null,
+        "valid_decisions_per_second": null,
+        "valid_array_rate": null
+      },
+      "logits": {
+        "screens": 0,
+        "measurements": 0,
+        "p50_ms": null,
+        "p95_ms": null,
+        "attempted_decisions_per_second": null,
+        "valid_decisions_per_second": null,
+        "valid_array_rate": null
+      },
+      "fast": {
+        "screens": 0,
+        "measurements": 0,
+        "p50_ms": null,
+        "p95_ms": null,
+        "attempted_decisions_per_second": null,
+        "valid_decisions_per_second": null,
+        "valid_array_rate": null
+      }
+    }
+  },
+  "peak_allocated_gib": 2.0539345741271973,
+  "peak_reserved_gib": 2.24609375,
+  "limitations": [
+    "No independent human gold",
+    "K=8 unavailable when fewer than 8 unique questions per screenshot",
+    "JSON sees all questions; logits uses independent question prompts",
+    "No confidence intervals yet; raw paired records retained"
+  ]
+}

@@ -1,0 +1,9 @@
+# Install the CUDA-compatible PyTorch wheel first; this file pins experiment libraries.
+transformers==5.17.0
+peft==0.21.0
+accelerate==1.15.0
+Pillow==12.2.0
+flash-linear-attention==0.5.2
+fla-core==0.5.2
+causal-conv1d==1.7.0
+numpy

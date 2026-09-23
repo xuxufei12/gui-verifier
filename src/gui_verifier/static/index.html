@@ -1,0 +1,30 @@
+<!doctype html>
+<html lang="zh-CN"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<title>GUI Verifier · 视觉决策实验室</title>
+<style>
+:root{color-scheme:light;font:15px/1.65 system-ui,sans-serif;color:#14293d;background:#f1f5f8}*{box-sizing:border-box}body{margin:0}header{background:#12293c;color:white;padding:30px max(24px,calc((100vw - 1200px)/2))}header p{color:#abc6d7;margin:4px 0}h1{margin:0;font-size:28px}main{max-width:1200px;margin:25px auto;padding:0 20px;display:grid;grid-template-columns:1fr 1fr;gap:22px}.panel{background:white;border:1px solid #d8e3e9;border-radius:14px;padding:24px}h2{font-size:18px;margin-top:0}label{display:block;font-weight:600;margin:15px 0 5px}textarea,input[type=text]{font:inherit;width:100%;border:1px solid #b8cad7;border-radius:7px;padding:10px}textarea{resize:vertical}button{background:#126b68;border:0;border-radius:8px;padding:12px 20px;color:white;font:inherit;cursor:pointer}button:disabled{opacity:.55;cursor:wait}small,.muted{color:#60798a}#preview{display:none;max-width:100%;max-height:330px;margin-top:15px;border:1px solid #d8e3e9}.decision{border-top:1px solid #dfE8ed;padding:18px 0}.decision h3{margin:0;font-size:16px}.badge{display:inline-block;background:#e7f0f4;padding:2px 9px;border-radius:6px;margin:6px 0}.bar{height:7px;background:#e8eef2;border-radius:4px}.fill{height:7px;background:#198e88;border-radius:4px}.row{display:flex;justify-content:space-between;margin-top:8px}#error{color:#a72d24;white-space:pre-wrap}pre{white-space:pre-wrap;overflow-wrap:anywhere;font-size:12px}footer{max-width:1160px;margin:20px auto;color:#60798a;padding:0 20px}@media(max-width:800px){main{grid-template-columns:1fr}}
+</style>
+<header><p>GUI VERIFIER / LOCAL RESEARCH PREVIEW</p><h1>看见界面，判断下一步</h1><p>上传截图，定义目标，同时验证多个问题。</p></header>
+<main><section class="panel"><h2>截图与任务</h2><input id="image" type="file" accept="image/png,image/jpeg,image/webp"><img id="preview" alt="待验证截图">
+<label for="goal">目标</label><input id="goal" type="text" value="完成登录，并确认当前界面显示登录成功。">
+<label for="rules">判断规则（每行一条）</label><textarea id="rules" rows="3">只根据截图中的可见信息判断。
+看不到的状态选择“无法判断”，不推测后台执行结果。</textarea>
+<label for="questions">问题（每行一条）</label><textarea id="questions" rows="5">当前页面是否存在登录按钮？
+是否出现明确的登录成功提示？
+当前是否显示错误提示？</textarea>
+<p><label style="font-weight:400"><input id="order" type="checkbox"> 调换选项顺序复核（额外推理）</label></p>
+<button id="run">开始判断</button><p id="state" class="muted">首次运行需要加载模型。图片仅发送至当前本地服务。</p><p id="error"></p></section>
+<section class="panel"><h2>判断结果</h2><p class="muted">候选分数尚未校准，不代表实际正确率。待复核结果不应自动触发操作。</p><div id="results"><p class="muted">等待截图与任务。</p></div><details><summary>完整响应</summary><pre id="raw"></pre></details></section></main>
+<footer>Qwen3.5-0.8B · 独立问题判断 · 本原型不会操作你的电脑</footer>
+<script>
+const el=id=>document.getElementById(id);let previewURL;
+el('image').onchange=()=>{if(previewURL)URL.revokeObjectURL(previewURL);const f=el('image').files[0];if(f){previewURL=URL.createObjectURL(f);el('preview').src=previewURL;el('preview').style.display='block'}};
+function node(tag,text,cls){const n=document.createElement(tag);n.textContent=text;if(cls)n.className=cls;return n}
+el('run').onclick=async()=>{el('error').textContent='';const file=el('image').files[0];const qs=el('questions').value.split('\n').map(s=>s.trim()).filter(Boolean);if(!file||!qs.length){el('error').textContent='请上传截图并填写问题。';return}
+const options=[{id:'yes',text:'是，截图有明确证据支持'},{id:'no',text:'否，截图有明确证据否定'},{id:'unknown',text:'无法判断，截图证据不足'}];
+const request={goal:el('goal').value,rules:el('rules').value.split('\n').map(s=>s.trim()).filter(Boolean),questions:qs.map((text,i)=>({id:'q'+i,text,options,unknown_option_id:'unknown'})),check_order:el('order').checked};
+const data=new FormData();data.append('image',file);data.append('request',JSON.stringify(request));el('run').disabled=true;el('state').textContent='正在加载或推理，请稍候…';const start=performance.now();
+try{const response=await fetch('/v1/verify',{method:'POST',body:data});const result=await response.json();if(!response.ok)throw Error(typeof result.detail==='string'?result.detail:JSON.stringify(result.detail));el('raw').textContent=JSON.stringify(result,null,2);el('results').replaceChildren();
+result.decisions.forEach((d,i)=>{const box=node('div','','decision');box.append(node('h3',qs[i]));const labels={yes:'是',no:'否',unknown:'无法判断'};const statuses={decided:'已判断',review:'待复核',unknown:'证据不足'};box.append(node('div',labels[d.selected_option_id]+' · '+statuses[d.status],'badge'));Object.entries(d.probabilities).forEach(([k,p])=>{const row=node('div','','row');row.append(node('span',labels[k]||k),node('span',(p*100).toFixed(1)+'%'));const bar=node('div','','bar');const fill=node('div','','fill');fill.style.width=(p*100)+'%';bar.append(fill);box.append(row,bar)});el('results').append(box)});el('state').textContent='完成 · 浏览器总耗时 '+((performance.now()-start)/1000).toFixed(2)+' 秒';
+}catch(e){el('error').textContent=e.message;el('state').textContent='请求失败，请查看服务终端。'}finally{el('run').disabled=false}};
+</script></html>

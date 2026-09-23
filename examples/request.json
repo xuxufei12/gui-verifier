@@ -1,0 +1,10 @@
+{
+  "goal": "Log in and verify that the screen visibly confirms success.",
+  "rules": ["Use only the current screenshot. Do not infer hidden server state."],
+  "questions": [
+    {"id":"login_button","text":"Is a Sign in button visible?","options":[{"id":"yes","text":"Yes"},{"id":"no","text":"No"},{"id":"unknown","text":"Insufficient evidence"}],"unknown_option_id":"unknown"},
+    {"id":"success","text":"Does the screen explicitly show a successful login?","options":[{"id":"yes","text":"Yes"},{"id":"no","text":"No"},{"id":"unknown","text":"Insufficient evidence"}],"unknown_option_id":"unknown"},
+    {"id":"backend","text":"Has the server persisted the user session to its database?","options":[{"id":"yes","text":"Yes"},{"id":"no","text":"No"},{"id":"unknown","text":"Insufficient evidence"}],"unknown_option_id":"unknown"}
+  ],
+  "check_order": false
+}

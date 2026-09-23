@@ -1,0 +1,27 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "gui-verifier"
+version = "0.1.0"
+description = "Local screenshot and rule conditioned decisions with Qwen3.5-0.8B"
+requires-python = ">=3.10"
+dependencies = ["torch>=2.6", "torchvision", "transformers>=5.2,<6", "accelerate>=1", "Pillow>=10", "pydantic>=2", "fastapi>=0.115", "uvicorn>=0.30", "python-multipart>=0.0.18"]
+
+[project.optional-dependencies]
+train = ["peft>=0.18"]
+test = ["pytest>=8", "httpx>=0.27"]
+
+[project.scripts]
+gui-verify = "gui_verifier.cli:main"
+
+[tool.setuptools.packages.find]
+where = ["src"]
+
+[tool.setuptools.package-data]
+gui_verifier = ["static/*.html"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+pythonpath = ["src"]
