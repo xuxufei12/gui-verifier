@@ -6,7 +6,7 @@
 
 A small, local GUI verification research project built on **Qwen3.5-0.8B**. Give it a screenshot, a goal, rules, and questions such as “Is the toggle on?” or “Is a success notification visible?” It scores candidate answers and returns structured decisions.
 
-Inspired by Jev-style decision interfaces, this is an independent implementation—not a reproduction of Jev's weights, architecture, or RLCD training. The repository provides inference, decision LoRA and JSON SFT training, evaluation scripts, and aggregate results. Real screenshots and trained adapters are **not yet publicly released**.
+Inspired by Jev-style decision interfaces, this is an independent implementation—not a reproduction of Jev's weights, architecture, or RLCD training. The repository provides inference, decision LoRA and JSON SFT training, evaluation scripts, and aggregate results. [Extended annotations and fixed splits](datasets/gui-verifier-v1/) are public. Images must be acquired from upstream; trained adapters are not yet released.
 
 ## Why this experiment?
 
@@ -136,7 +136,7 @@ The verifier does not click, type, or operate a browser. Screenshot text is trea
 | Validation | 288 | 1,314 | 269 |
 | Calibration | 280 | 1,286 | 270 |
 
-Images come from OS-Atlas and ScreenQA. Detected overlaps with reserved ScreenSpot images were removed. Group IDs are disjoint across splits, but this does not rule out all semantic/template leakage. Contrastive examples currently change a fact in the **question about the same image**; they are not pairs of screenshots with one visual fact changed.
+The dataset is extended from [OS-Atlas](https://huggingface.co/datasets/OS-Copilot/OS-Atlas-data) and [ScreenQA](https://github.com/google-research-datasets/screen_qa). Download the [annotations, source manifest and splits](datasets/gui-verifier-v1/); see its README to reconstruct images acquired from upstream. Detected overlaps with reserved ScreenSpot images were removed. Group IDs are disjoint across splits, but this does not rule out all semantic/template leakage. Contrastive examples currently change a fact in the **question about the same image**; they are not pairs of screenshots with one visual fact changed.
 
 A JSONL record contains `id`, `group_id`, `image` (relative to the JSONL), `request`, and `labels` mapping question IDs to option IDs. Labels never enter the prompt. Related screenshots and counterfactual variants should share a group ID before splitting. See [the full contract and recipe](docs/TRAINING.md) (Chinese).
 
@@ -148,11 +148,11 @@ Both recipes freeze vision and base weights and train language-side LoRA: rank 1
 
 ```bash
 python tools/train004.py --model models/Qwen3.5-0.8B \
-  --train data/gui-pairs-v1/final/train.jsonl --validation data/gui-pairs-v1/final/validation.jsonl \
+  --train datasets/gui-verifier-v1/final/train.jsonl --validation datasets/gui-verifier-v1/final/validation.jsonl \
   --output outputs/decision-lr5e5-seed404 --mode decision --lr 5e-5 --seed 404 --epochs 3
 
 python tools/train004.py --model models/Qwen3.5-0.8B \
-  --train data/gui-pairs-v1/final/train.jsonl --validation data/gui-pairs-v1/final/validation.jsonl \
+  --train datasets/gui-verifier-v1/final/train.jsonl --validation datasets/gui-verifier-v1/final/validation.jsonl \
   --output outputs/json-lr5e5-seed404 --mode json --lr 5e-5 --seed 404 --epochs 3
 ```
 
@@ -163,7 +163,7 @@ Repeat with `--lr 2e-5` and distinct output directories. Validation runs roughly
 ```bash
 python tools/evaluate004.py --model models/Qwen3.5-0.8B \
   --adapter outputs/decision-lr5e5-seed404/best-adapter \
-  --data data/gui-pairs-v1/final/validation.jsonl \
+  --data datasets/gui-verifier-v1/final/validation.jsonl \
   --output outputs/experiment-004/decision-selected-full --speed-screens 100 --repeats 5
 ```
 
@@ -172,7 +172,7 @@ Omit `--adapter` and use output `base-full` for the base model; use the JSON ada
 ```bash
 python tools/evaluate004.py --model models/Qwen3.5-0.8B \
   --adapter outputs/decision-lr5e5-seed404/best-adapter \
-  --data data/gui-pairs-v1/final/calibration.jsonl \
+  --data datasets/gui-verifier-v1/final/calibration.jsonl \
   --output outputs/experiment-004/calibration-eval --methods fast --speed-screens 0
 python tools/analyze004.py --root outputs/experiment-004
 ```
@@ -198,7 +198,7 @@ reports/published/     Aggregate reports, without business input text
 requirements-experiment004.txt
 ```
 
-The source release excludes credentials, internal infrastructure tools, real images/labels, raw teacher outputs, and weights/adapters. Because the fixed dataset and adapters are not public, this is **method code you can run on your own compliant data**, not a one-command reproduction of the reported scores. See [release notes](docs/RELEASE.md).
+The release includes expanded annotations, fixed splits and image provenance. It excludes credentials, internal infrastructure tools, original screenshots, raw teacher outputs and weights/adapters. Images must be acquired under upstream terms and reconstructed using `tools/restore_dataset_images.py`. Adapters are not public; exact results still require training and matching the recorded environment. See [release notes](docs/RELEASE.md).
 
 ## License and acknowledgments
 

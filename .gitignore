@@ -17,3 +17,8 @@ ssh.txt
 *.safetensors
 *.pt
 *.pth
+
+# Upstream screenshots are acquired locally, not redistributed
+datasets/**/images/
+datasets/**/images-v2/
+datasets/**/restore-report.json

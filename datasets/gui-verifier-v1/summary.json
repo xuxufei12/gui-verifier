@@ -1,0 +1,34 @@
+{
+  "splits": {
+    "train": {
+      "records": 6061,
+      "judgments": 10266,
+      "images": 2251
+    },
+    "validation": {
+      "records": 774,
+      "judgments": 1314,
+      "images": 288
+    },
+    "calibration": {
+      "records": 761,
+      "judgments": 1286,
+      "images": 280
+    }
+  },
+  "images": 2819,
+  "label_quality": "silver_same_model_review",
+  "human_reviewed": false,
+  "excluded_fields": [
+    "generation_task_id",
+    "review_task_id",
+    "teacher_provider",
+    "review_provider"
+  ],
+  "image_distribution": "upstream download; not redistributed",
+  "sha256": {
+    "final/train.jsonl": "b676039e44b56b8854fa53e01cc4f8f86dcb62a5b0d9331ef438aa4582bbd298",
+    "final/validation.jsonl": "8a0f5ce0a1e9c378f93a1328b190742293a88739897b21f648fd5c49924e9123",
+    "final/calibration.jsonl": "c44e1478e7969cffb7c3e2d9be69f728c16151ec0f0e57d6de243c49553ea74e"
+  }
+}

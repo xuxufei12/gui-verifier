@@ -6,7 +6,7 @@
 
 输入一张 GUI 截图、目标和自然语言规则，判断“开关是否打开”“是否出现成功提示”“证据是否不足”。基于 Qwen3.5-0.8B，提供候选 logits 读出、语言侧 LoRA 训练、共享视觉特征快速路径，以及 JSON SFT 对照实验。
 
-这是独立研究实现，受 Jev 类决策接口启发，不是 Jev 权重或内部训练方法的复现。本仓库提供代码与汇总报告，适配器和真实截图数据尚未公开发布。
+这是独立研究实现，受 Jev 类决策接口启发，不是 Jev 权重或内部训练方法的复现。本仓库提供代码与汇总报告，[扩展标注、固定划分和逐图来源](datasets/gui-verifier-v1/)已公开；截图需从上游取得，适配器尚未公开。
 
 ## 实测结论
 
@@ -131,7 +131,7 @@ CLI/API 返回 `model`、`decisions`、`timing_ms`、`metadata`；每个 decisio
 | validation | 288 | 1314 | 269 |
 | calibration | 280 | 1286 | 270 |
 
-来源为 OS-Atlas 与 ScreenQA，排除了与保留 ScreenSpot 图像的已检出重叠；无跨 split group 重叠，不代表不存在所有语义或模板泄漏。同图正负对修改问题中的事实，**尚不是同一问题配两张只改一个视觉事实的截图**。
+基于 [OS-Atlas](https://huggingface.co/datasets/OS-Copilot/OS-Atlas-data) 和 [ScreenQA](https://github.com/google-research-datasets/screen_qa) 做了扩展。标注下载及图片重建说明见[数据集目录](datasets/gui-verifier-v1/)。排除了与保留 ScreenSpot 图像的已检出重叠；无跨 split group 重叠，不代表不存在所有语义或模板泄漏。同图正负对修改问题中的事实，**尚不是同一问题配两张只改一个视觉事实的截图**。
 
 两种训练均冻结视觉塔和基础权重，语言侧 LoRA r=16、alpha=32、dropout=0.05；BF16、AdamW、weight decay=0.01、clip=1、5% warmup、线性衰减，最多 3 epochs。学习率搜索 2e-5 / 5e-5，仅 seed404。
 
@@ -162,7 +162,7 @@ reports/published/     不含业务原文的汇总报告
 requirements-experiment004.txt
 ```
 
-发布包采用明确文件清单，保留本地历史实验与原始证据但不收入公开包。参见 [发布说明](docs/RELEASE.md)。原始截图、完整教师结果、适配器、内部上传/SSH 工具和历史运维资料不随源码包发布。因数据和适配器未公开，当前不能一键精确复现本次数字；代码可在自备合规数据上运行。
+发布包采用明确文件清单，保留本地历史实验与原始证据但不收入公开包。参见 [发布说明](docs/RELEASE.md)。原始截图、完整教师结果、适配器、内部上传/SSH 工具和历史运维资料不随源码包发布。扩展标注已公开，原图需从上游取得并重建标记；适配器未公开，精确复现仍需训练和匹配实验环境。
 
 ## 许可与致谢
 

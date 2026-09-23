@@ -5,9 +5,9 @@ ROOT=Path(__file__).resolve().parents[1]
 def main():
     files=[Path(x) for x in ['README.md','README.zh-CN.md','LICENSE','pyproject.toml','.gitignore','requirements-experiment004.txt',
         'docs/TRAINING.md','docs/RESULTS_004.md','docs/THIRD_PARTY.md','docs/RELEASE.md',
-        'tools/train004.py','tools/evaluate004.py','tools/analyze004.py','tools/prepare_data.py','tools/build_public_release.py',
+        'tools/restore_dataset_images.py','tools/train004.py','tools/evaluate004.py','tools/analyze004.py','tools/prepare_data.py','tools/build_public_release.py',
         'tests/test_contract.py','tests/test_data.py','tests/test_experiment.py','tests/test_experiment004.py']]
-    for folder,pattern in [('src','*'),('examples','*.json'),('reports/published','*.json')]:
+    for folder,pattern in [('src','*'),('examples','*.json'),('reports/published','*.json'),('datasets/gui-verifier-v1','*.jsonl'),('datasets/gui-verifier-v1','*.json'),('datasets/gui-verifier-v1','*.md'),('datasets/gui-verifier-v1','*.txt')]:
         files += [p.relative_to(ROOT) for p in (ROOT/folder).rglob(pattern) if p.is_file() and '__pycache__' not in p.parts]
     files=sorted(set(files))
     patterns=[r'172[.]30[.]',r'172[.]31[.]',r'feixu23',r'/root/autodl-tmp',r'invoke[.]feishudata',r'BEGIN [A-Z ]*PRIVATE KEY']

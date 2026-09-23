@@ -1,0 +1,2 @@
+Rico screenshot terms: https://www.interactionmining.org/archive/rico/copyright.txt
+Screenshots are not redistributed in this repository. Read and accept the upstream terms yourself before downloading.

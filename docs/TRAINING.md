@@ -1,6 +1,6 @@
 # 数据契约与实验 004 复现
 
-以下命令在项目根目录、已激活实验环境运行。真实数据与训练适配器尚未公开，自备数据须符合契约。所有输出目录必须是新目录；训练器拒绝覆盖中断的运行，不能把重跑当作无缝恢复。
+以下命令在项目根目录、已激活实验环境运行。扩展标注已在 datasets/gui-verifier-v1 公开，原图需从上游取得并按数据集README重建；训练适配器尚未公开。自备数据须符合契约。所有输出目录必须是新目录；训练器拒绝覆盖中断的运行，不能把重跑当作无缝恢复。
 
 ## 一行数据
 
@@ -18,7 +18,7 @@ OS-Atlas 桌面/网页与 ScreenQA 移动截图，先冻结来源，过滤已发
 
 训练 yes/no/unknown 为 4205/4205/1856；验证 540/540/234；校准 525/525/236。图片内容 hash 与 group 跨集检查已执行，但缺少独立人工质量审计。
 
-固定数据 SHA-256：
+原内部实验文件 SHA-256（公开副本移除了平台任务/供应商字段，内容hash随之变化；请求与标签未变，公开hash见数据集summary.json）：
 
 - train: `e4d244b59aa8e3ed3134629db2cb539fd3ef6b7d08f9f941f85fbb11745ea54b`
 - validation: `ed49bf48db659a3882d69e3f723437893deb0b38525dde96d0ff3b83cf7bb818`
@@ -28,11 +28,11 @@ OS-Atlas 桌面/网页与 ScreenQA 移动截图，先冻结来源，过滤已发
 
 ```bash
 python tools/train004.py --model models/Qwen3.5-0.8B \
-  --train data/gui-pairs-v1/final/train.jsonl --validation data/gui-pairs-v1/final/validation.jsonl \
+  --train datasets/gui-verifier-v1/final/train.jsonl --validation datasets/gui-verifier-v1/final/validation.jsonl \
   --output outputs/decision-lr5e5-seed404 --mode decision --lr 5e-5 --seed 404 --epochs 3
 
 python tools/train004.py --model models/Qwen3.5-0.8B \
-  --train data/gui-pairs-v1/final/train.jsonl --validation data/gui-pairs-v1/final/validation.jsonl \
+  --train datasets/gui-verifier-v1/final/train.jsonl --validation datasets/gui-verifier-v1/final/validation.jsonl \
   --output outputs/json-lr5e5-seed404 --mode json --lr 5e-5 --seed 404 --epochs 3
 ```
 
@@ -48,19 +48,19 @@ python tools/train004.py --model models/Qwen3.5-0.8B \
 
 ```bash
 python tools/evaluate004.py --model models/Qwen3.5-0.8B \
-  --data data/gui-pairs-v1/final/validation.jsonl --output outputs/experiment-004/base-full \
+  --data datasets/gui-verifier-v1/final/validation.jsonl --output outputs/experiment-004/base-full \
   --speed-screens 100 --repeats 5
 python tools/evaluate004.py --model models/Qwen3.5-0.8B \
   --adapter outputs/decision-lr5e5-seed404/best-adapter \
-  --data data/gui-pairs-v1/final/validation.jsonl --output outputs/experiment-004/decision-selected-full \
+  --data datasets/gui-verifier-v1/final/validation.jsonl --output outputs/experiment-004/decision-selected-full \
   --speed-screens 100 --repeats 5
 python tools/evaluate004.py --model models/Qwen3.5-0.8B \
   --adapter outputs/json-lr5e5-seed404/best-adapter \
-  --data data/gui-pairs-v1/final/validation.jsonl --output outputs/experiment-004/json-selected-full \
+  --data datasets/gui-verifier-v1/final/validation.jsonl --output outputs/experiment-004/json-selected-full \
   --speed-screens 100 --repeats 5
 python tools/evaluate004.py --model models/Qwen3.5-0.8B \
   --adapter outputs/decision-lr5e5-seed404/best-adapter \
-  --data data/gui-pairs-v1/final/calibration.jsonl --output outputs/experiment-004/calibration-eval \
+  --data datasets/gui-verifier-v1/final/calibration.jsonl --output outputs/experiment-004/calibration-eval \
   --methods fast --speed-screens 0
 python tools/analyze004.py --root outputs/experiment-004
 ```
@@ -73,4 +73,4 @@ python tools/analyze004.py --root outputs/experiment-004
 
 ## 复现边界
 
-汇总报告不是原始可审核样本的替代品。目前真实截图、完整标签与适配器未公开，需后续许可/隐私审查后另行发布。当前脚本可以复现方法，不能凭公开包独立验证论文式固定测试成绩。还未测：独立人工金标、并发4/8、视觉事实翻转对、全部分辨率消融、完整多种子结果。
+汇总报告不是原始可审核样本的替代品。目前完整扩展标签及固定划分已公开，截图从上游取得并按manifest重建，适配器未公开。标注请求、标签与划分保持原样，仅移除了内部平台元数据。还未测：独立人工金标、并发4/8、视觉事实翻转对、全部分辨率消融、完整多种子结果。
