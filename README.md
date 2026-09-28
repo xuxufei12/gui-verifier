@@ -71,6 +71,8 @@ pytest -q
 
 `causal-conv1d` may require a matching CUDA toolkit and `nvcc` to build. Reference kernels without the acceleration packages cannot be assumed to match these latency results. The package's broad dependency ranges are not a compatibility guarantee for every combination.
 
+Only the training entry points need `torch` and `peft`, and both are imported inside `main()`. On a machine without a CUDA stack, `pip install -e '.[test]'` is enough for `pytest -q` to collect and run the non-training tests. Training itself still requires a BF16-capable CUDA GPU.
+
 ## Quick start
 
 Download the pinned base model, then create synthetic demo screenshots:

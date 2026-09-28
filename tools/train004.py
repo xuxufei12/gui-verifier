@@ -1,15 +1,18 @@
-"""Epoch-based LoRA decision / JSON SFT, with silver-development checkpoint selection."""
+"""Epoch-based LoRA decision / JSON SFT, with silver-development checkpoint selection.
+
+torch and peft are imported inside main(), so this module imports without a CUDA stack.
+"""
 import argparse,json,random,time,math,hashlib
 from pathlib import Path
-import torch
 from PIL import Image
-from peft import LoraConfig,get_peft_model
 from gui_verifier.backend import QwenVerifier
 from gui_verifier.schema import VerifyRequest
 from gui_verifier.prompt import messages_for
 from gui_verifier.experiment004 import grouped,json_messages,parse_array,summarize
 
 def main():
+ import torch
+ from peft import LoraConfig,get_peft_model
  p=argparse.ArgumentParser()
  for arg in ('train','validation','model','output'):p.add_argument('--'+arg,required=True)
  p.add_argument('--mode',choices=['decision','json'],default='decision')
