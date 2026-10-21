@@ -1,6 +1,8 @@
 """BF16 LoRA with candidate-restricted CE at the final prompt position.
 
 No reasoning/JSON targets; no gold label is included in model input.
+torch and peft are imported inside main(), so the CPU-only test suite can collect
+this module and reuse assert_disjoint without a CUDA stack installed.
 """
 import argparse
 import json
@@ -8,9 +10,7 @@ import random
 import time
 from pathlib import Path
 
-import torch
 from PIL import Image
-from peft import LoraConfig, get_peft_model
 
 from .backend import QwenVerifier
 from .schema import VerifyRequest
@@ -26,6 +26,9 @@ def assert_disjoint(train, validation):
 
 
 def main():
+    import torch
+    from peft import LoraConfig, get_peft_model
+
     p=argparse.ArgumentParser()
     p.add_argument('--train',required=True);p.add_argument('--validation',required=True)
     p.add_argument('--model',default='Qwen/Qwen3.5-0.8B');p.add_argument('--output',required=True)

@@ -71,6 +71,8 @@ pytest -q
 
 causal-conv1d 可能需要本机 CUDA toolkit/nvcc 编译；安装时应匹配 PyTorch CUDA。缺少加速内核的参考实现可能可运行，但不能引用本次延迟作为其性能。Python 包声明的宽版本范围不代表每个版本组合都经过验证。
 
+只有训练入口需要 `torch` 和 `peft`，两者都在 `main()` 内导入。没有 CUDA 环境的机器装 `pip install -e '.[test]'` 之后，`pytest -q` 就能收集并跑通非训练测试；训练本身仍然要求支持 BF16 的 CUDA GPU。
+
 ## 快速开始
 
 下载固定版本基础模型（仅下载模型，不下载数据）：
